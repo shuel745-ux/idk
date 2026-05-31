@@ -1,0 +1,1767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudyFlow — Student Productivity Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --sage: #4a7c59;
+  --sage-light: #e8f0eb;
+  --sage-mid: #7aab8a;
+  --amber: #d4872a;
+  --amber-light: #fdf3e7;
+  --blush: #c4706a;
+  --blush-light: #fbeaea;
+  --slate: #3a4a5c;
+  --slate-light: #eef1f5;
+  --cream: #faf8f4;
+  --white: #ffffff;
+  --text-primary: #1e2d1e;
+  --text-secondary: #5a6a5a;
+  --text-muted: #8a9a8a;
+  --border: #dde5dd;
+  --shadow: 0 2px 12px rgba(30,45,30,0.08);
+  --shadow-lg: 0 8px 32px rgba(30,45,30,0.12);
+  --r-sm: 8px;
+  --r-md: 14px;
+  --r-lg: 20px;
+  --r-xl: 28px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--cream);
+  color: var(--text-primary);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* NAV */
+nav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+  background: rgba(250,248,244,0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 2rem; height: 60px;
+}
+.nav-logo { font-family: 'Fraunces', serif; font-size: 1.4rem; font-weight: 600; color: var(--sage); }
+.nav-logo span { color: var(--amber); font-style: italic; }
+.nav-links { display: flex; gap: 0.25rem; }
+.nav-btn {
+  padding: 6px 14px; border-radius: 20px; border: none; background: transparent;
+  font-family: 'DM Sans', sans-serif; font-size: 0.85rem; color: var(--text-secondary);
+  cursor: pointer; transition: all 0.2s; font-weight: 500;
+}
+.nav-btn:hover, .nav-btn.active { background: var(--sage-light); color: var(--sage); }
+.nav-user {
+  width: 34px; height: 34px; border-radius: 50%; background: var(--sage);
+  display: flex; align-items: center; justify-content: center;
+  color: white; font-size: 0.8rem; font-weight: 600; cursor: pointer;
+}
+
+/* PAGES */
+.page { display: none; padding-top: 60px; min-height: 100vh; }
+.page.active { display: block; }
+
+/* ===== HOME PAGE ===== */
+.home-hero {
+  background: linear-gradient(135deg, #e8f0eb 0%, #faf8f4 50%, #fdf3e7 100%);
+  padding: 4rem 2rem 3rem;
+  text-align: center; position: relative; overflow: hidden;
+}
+.home-hero::before {
+  content: ''; position: absolute; top: -60px; right: -60px;
+  width: 300px; height: 300px; border-radius: 50%;
+  background: rgba(74,124,89,0.06);
+}
+.home-hero::after {
+  content: ''; position: absolute; bottom: -40px; left: -40px;
+  width: 200px; height: 200px; border-radius: 50%;
+  background: rgba(212,135,42,0.06);
+}
+.quote-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--white); border: 1px solid var(--border);
+  border-radius: 20px; padding: 6px 16px; font-size: 0.78rem;
+  color: var(--text-muted); margin-bottom: 1.5rem;
+  font-weight: 500; letter-spacing: 0.3px;
+}
+.quote-badge::before { content: '✦'; color: var(--amber); }
+.hero-quote {
+  font-family: 'Fraunces', serif; font-size: clamp(1.6rem, 3.5vw, 2.4rem);
+  font-weight: 400; line-height: 1.4; color: var(--text-primary);
+  max-width: 680px; margin: 0 auto 0.75rem; font-style: italic;
+}
+.hero-quote-author {
+  font-size: 0.9rem; color: var(--text-muted); margin-bottom: 2.5rem;
+  font-weight: 500;
+}
+.hero-quote-author::before { content: '— '; }
+.hero-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+.btn-primary {
+  padding: 11px 24px; background: var(--sage); color: white;
+  border: none; border-radius: 24px; font-family: 'DM Sans', sans-serif;
+  font-size: 0.9rem; font-weight: 500; cursor: pointer; transition: all 0.2s;
+}
+.btn-primary:hover { background: #3d6b4b; transform: translateY(-1px); }
+.btn-outline {
+  padding: 11px 24px; background: transparent; color: var(--sage);
+  border: 1.5px solid var(--sage); border-radius: 24px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.9rem; font-weight: 500;
+  cursor: pointer; transition: all 0.2s;
+}
+.btn-outline:hover { background: var(--sage-light); }
+
+.home-grid {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 1.25rem; padding: 2.5rem 2rem; max-width: 1200px; margin: 0 auto;
+}
+.home-card {
+  background: var(--white); border: 1px solid var(--border); border-radius: var(--r-lg);
+  padding: 1.5rem; cursor: pointer; transition: all 0.25s; position: relative; overflow: hidden;
+}
+.home-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+.home-card-icon {
+  width: 44px; height: 44px; border-radius: var(--r-md);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.3rem; margin-bottom: 1rem;
+}
+.home-card h3 { font-size: 1rem; font-weight: 600; margin-bottom: 0.4rem; }
+.home-card p { font-size: 0.84rem; color: var(--text-secondary); line-height: 1.6; }
+.home-card-tag {
+  position: absolute; top: 1rem; right: 1rem;
+  font-size: 0.7rem; padding: 3px 8px; border-radius: 10px; font-weight: 500;
+}
+
+/* STATS BAR */
+.stats-bar {
+  display: flex; gap: 0; background: var(--slate); color: white;
+  overflow-x: auto;
+}
+.stat-item {
+  flex: 1; min-width: 150px; padding: 1.25rem 1.5rem;
+  border-right: 1px solid rgba(255,255,255,0.1);
+  text-align: center;
+}
+.stat-item:last-child { border-right: none; }
+.stat-num { font-family: 'Fraunces', serif; font-size: 1.8rem; font-weight: 600; }
+.stat-label { font-size: 0.78rem; opacity: 0.7; margin-top: 2px; }
+
+/* ===== CALENDAR PAGE ===== */
+.cal-layout { display: grid; grid-template-columns: 1fr 320px; gap: 0; height: calc(100vh - 60px); }
+.cal-main { padding: 2rem; overflow-y: auto; }
+.cal-sidebar { background: var(--white); border-left: 1px solid var(--border); padding: 1.5rem; overflow-y: auto; }
+.cal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+.cal-title { font-family: 'Fraunces', serif; font-size: 1.5rem; font-weight: 600; }
+.cal-nav { display: flex; gap: 0.5rem; }
+.cal-nav button {
+  width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border);
+  background: var(--white); cursor: pointer; font-size: 1rem; transition: all 0.2s;
+}
+.cal-nav button:hover { background: var(--sage-light); border-color: var(--sage); }
+.cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 4px; }
+.cal-day-name {
+  text-align: center; font-size: 0.75rem; font-weight: 600;
+  color: var(--text-muted); padding: 8px 4px; letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+.cal-day {
+  aspect-ratio: 1; border-radius: var(--r-sm); padding: 6px;
+  cursor: pointer; transition: all 0.2s; position: relative;
+  background: var(--white); border: 1px solid transparent;
+  display: flex; flex-direction: column; align-items: center;
+}
+.cal-day:hover { background: var(--sage-light); border-color: var(--border); }
+.cal-day.today { background: var(--sage); color: white; }
+.cal-day.today .cal-day-num { color: white; }
+.cal-day.other-month .cal-day-num { color: var(--text-muted); }
+.cal-day.has-event::after {
+  content: ''; position: absolute; bottom: 4px;
+  width: 18px; height: 3px; border-radius: 2px; background: var(--amber);
+}
+.cal-day.has-session::after { background: var(--sage); }
+.cal-day-num { font-size: 0.85rem; font-weight: 500; margin-top: 2px; }
+.cal-events-list { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem; }
+.cal-event-item {
+  padding: 0.75rem 1rem; border-radius: var(--r-md); font-size: 0.84rem;
+  border-left: 3px solid var(--sage); background: var(--sage-light);
+  cursor: pointer;
+}
+.cal-event-item.activity { border-color: var(--amber); background: var(--amber-light); }
+.cal-event-item.session { border-color: var(--blush); background: var(--blush-light); }
+.cal-event-title { font-weight: 600; }
+.cal-event-time { font-size: 0.78rem; color: var(--text-muted); margin-top: 2px; }
+
+/* Upload schedule */
+.upload-box {
+  border: 2px dashed var(--border); border-radius: var(--r-lg);
+  padding: 2rem; text-align: center; cursor: pointer;
+  transition: all 0.2s; background: var(--cream); margin-top: 1rem;
+}
+.upload-box:hover { border-color: var(--sage); background: var(--sage-light); }
+.upload-box-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+.upload-box p { font-size: 0.85rem; color: var(--text-secondary); }
+
+/* ===== ACTIVITIES PAGE ===== */
+.activities-layout { padding: 2rem; max-width: 1100px; margin: 0 auto; }
+.page-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 2rem; }
+.page-title { font-family: 'Fraunces', serif; font-size: 1.8rem; font-weight: 600; }
+.page-subtitle { font-size: 0.9rem; color: var(--text-secondary); margin-top: 0.25rem; }
+.activities-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.25rem; }
+.activity-card {
+  background: var(--white); border: 1px solid var(--border); border-radius: var(--r-lg);
+  overflow: hidden; transition: all 0.25s;
+}
+.activity-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.activity-img {
+  height: 140px; background: linear-gradient(135deg, var(--sage-light), var(--amber-light));
+  display: flex; align-items: center; justify-content: center; font-size: 3rem;
+  position: relative;
+}
+.activity-badge {
+  position: absolute; top: 12px; right: 12px;
+  background: var(--white); border-radius: 12px; padding: 4px 10px;
+  font-size: 0.75rem; font-weight: 600; color: var(--sage);
+}
+.activity-body { padding: 1.25rem; }
+.activity-title { font-weight: 600; font-size: 1rem; margin-bottom: 0.5rem; }
+.activity-desc { font-size: 0.84rem; color: var(--text-secondary); line-height: 1.6; margin-bottom: 1rem; }
+.activity-meta { display: flex; gap: 1rem; font-size: 0.78rem; color: var(--text-muted); margin-bottom: 1rem; }
+.activity-meta span { display: flex; align-items: center; gap: 4px; }
+.activity-footer { display: flex; align-items: center; justify-content: space-between; padding-top: 1rem; border-top: 1px solid var(--border); }
+.add-cal-toggle { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+.toggle-switch {
+  width: 36px; height: 20px; border-radius: 10px; background: var(--border);
+  position: relative; transition: background 0.2s; flex-shrink: 0;
+}
+.toggle-switch.on { background: var(--sage); }
+.toggle-knob {
+  position: absolute; top: 2px; left: 2px; width: 16px; height: 16px;
+  border-radius: 50%; background: white; transition: left 0.2s;
+}
+.toggle-switch.on .toggle-knob { left: 18px; }
+.toggle-label { font-size: 0.8rem; color: var(--text-secondary); }
+
+/* ADMIN PANEL */
+.admin-badge {
+  background: #fdf0e8; color: var(--amber); font-size: 0.75rem;
+  padding: 3px 10px; border-radius: 10px; font-weight: 600;
+  border: 1px solid #f0c887;
+}
+
+/* ===== STUDY ROOMS PAGE ===== */
+.rooms-layout { padding: 2rem; max-width: 1100px; margin: 0 auto; }
+.rooms-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1.25rem; margin-top: 1.5rem; }
+.room-card {
+  background: var(--white); border: 1px solid var(--border); border-radius: var(--r-lg);
+  padding: 1.5rem; transition: all 0.25s; position: relative;
+}
+.room-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.room-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1rem; }
+.room-name { font-weight: 600; font-size: 1rem; }
+.room-status { font-size: 0.75rem; padding: 3px 10px; border-radius: 10px; font-weight: 500; }
+.room-status.open { background: #e8f5e9; color: #2e7d32; }
+.room-status.full { background: #fdecea; color: #b71c1c; }
+.room-members {
+  display: flex; margin-bottom: 1rem;
+}
+.member-dot {
+  width: 28px; height: 28px; border-radius: 50%; border: 2px solid white;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 0.7rem; font-weight: 600; margin-right: -8px; color: white;
+}
+.room-info { font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 1.25rem; line-height: 1.6; }
+.room-footer { display: flex; gap: 0.75rem; }
+.btn-sm {
+  padding: 8px 16px; border-radius: 20px; font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem; font-weight: 500; cursor: pointer; transition: all 0.2s; border: none;
+}
+.btn-sage { background: var(--sage); color: white; }
+.btn-sage:hover { background: #3d6b4b; }
+.btn-ghost { background: transparent; color: var(--text-secondary); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--slate-light); }
+
+/* STUDY ROOM MODAL */
+.modal-overlay {
+  display: none; position: fixed; inset: 0; background: rgba(30,45,30,0.55);
+  z-index: 200; align-items: center; justify-content: center;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.open { display: flex; }
+.modal {
+  background: var(--white); border-radius: var(--r-xl); padding: 2rem;
+  width: 90%; max-width: 520px; max-height: 85vh; overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+}
+.modal-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
+.modal-title { font-family: 'Fraunces', serif; font-size: 1.3rem; font-weight: 600; }
+.modal-close { width: 32px; height: 32px; border-radius: 50%; border: 1px solid var(--border); background: transparent; cursor: pointer; font-size: 1.1rem; }
+.form-group { margin-bottom: 1.25rem; }
+.form-label { display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: 0.5rem; color: var(--text-secondary); }
+.form-input {
+  width: 100%; padding: 10px 14px; border: 1.5px solid var(--border);
+  border-radius: var(--r-md); font-family: 'DM Sans', sans-serif; font-size: 0.9rem;
+  background: var(--cream); transition: border-color 0.2s; outline: none;
+  color: var(--text-primary);
+}
+.form-input:focus { border-color: var(--sage); background: var(--white); }
+.form-textarea { resize: vertical; min-height: 80px; }
+
+/* ROOM INNER VIEW */
+.room-view { display: none; }
+.room-view.open { display: flex; }
+.room-view-layout { display: grid; grid-template-columns: 1fr 280px; height: calc(100vh - 60px); width: 100%; }
+.room-main { display: flex; flex-direction: column; padding: 1.5rem; gap: 1rem; overflow-y: auto; }
+.room-sidebar { background: var(--white); border-left: 1px solid var(--border); display: flex; flex-direction: column; }
+
+/* MUSIC PLAYER */
+.music-player {
+  background: var(--slate); color: white; border-radius: var(--r-lg);
+  padding: 1.25rem; margin-bottom: 1rem;
+}
+.music-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1rem; }
+.music-title { font-weight: 600; font-size: 0.9rem; }
+.music-badge { background: rgba(255,255,255,0.15); font-size: 0.7rem; padding: 2px 8px; border-radius: 8px; }
+.music-track { display: flex; align-items: center; gap: 12px; margin-bottom: 1rem; }
+.music-art {
+  width: 44px; height: 44px; border-radius: var(--r-sm);
+  background: linear-gradient(135deg, var(--sage-mid), var(--amber));
+  display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0;
+}
+.music-info { flex: 1; min-width: 0; }
+.music-song { font-weight: 500; font-size: 0.88rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.music-artist { font-size: 0.75rem; opacity: 0.7; margin-top: 2px; }
+.music-progress { width: 100%; height: 3px; background: rgba(255,255,255,0.2); border-radius: 2px; margin-bottom: 0.75rem; cursor: pointer; }
+.music-fill { height: 100%; background: var(--sage-mid); border-radius: 2px; width: 35%; transition: width 0.5s; }
+.music-controls { display: flex; align-items: center; justify-content: center; gap: 1rem; }
+.music-btn {
+  background: transparent; border: none; color: white; cursor: pointer;
+  font-size: 0.9rem; padding: 6px; border-radius: 50%; transition: background 0.2s;
+  display: flex; align-items: center; justify-content: center; width: 34px; height: 34px;
+}
+.music-btn:hover { background: rgba(255,255,255,0.15); }
+.music-btn.play-btn { background: rgba(255,255,255,0.2); width: 40px; height: 40px; font-size: 1rem; }
+.music-queue { margin-top: 1rem; }
+.music-queue-title { font-size: 0.75rem; opacity: 0.7; margin-bottom: 0.5rem; }
+.music-queue-item {
+  display: flex; align-items: center; gap: 8px; padding: 6px;
+  border-radius: var(--r-sm); cursor: pointer; transition: background 0.15s;
+  font-size: 0.8rem;
+}
+.music-queue-item:hover { background: rgba(255,255,255,0.1); }
+.music-queue-item.playing { background: rgba(255,255,255,0.15); }
+.queue-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--sage-mid); flex-shrink: 0; }
+
+/* CHAT */
+.room-chat { flex: 1; display: flex; flex-direction: column; }
+.chat-header { padding: 1rem 1.25rem; border-bottom: 1px solid var(--border); font-weight: 600; font-size: 0.9rem; }
+.chat-messages { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.75rem; }
+.chat-msg { display: flex; gap: 8px; }
+.chat-avatar { width: 28px; height: 28px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 0.7rem; font-weight: 600; color: white; }
+.chat-bubble { background: var(--slate-light); padding: 8px 12px; border-radius: 12px 12px 12px 4px; font-size: 0.83rem; line-height: 1.5; max-width: 200px; }
+.chat-msg.own { flex-direction: row-reverse; }
+.chat-msg.own .chat-bubble { background: var(--sage-light); border-radius: 12px 12px 4px 12px; }
+.chat-name { font-size: 0.72rem; color: var(--text-muted); margin-bottom: 3px; }
+.chat-input-area { padding: 0.75rem; border-top: 1px solid var(--border); display: flex; gap: 8px; }
+.chat-input {
+  flex: 1; padding: 8px 12px; border: 1.5px solid var(--border); border-radius: 20px;
+  font-family: 'DM Sans', sans-serif; font-size: 0.85rem; outline: none;
+  background: var(--cream); transition: border-color 0.2s;
+}
+.chat-input:focus { border-color: var(--sage); }
+.chat-send {
+  width: 34px; height: 34px; border-radius: 50%; background: var(--sage); border: none;
+  color: white; cursor: pointer; font-size: 0.9rem; flex-shrink: 0; transition: background 0.2s;
+}
+.chat-send:hover { background: #3d6b4b; }
+
+/* MEMBERS LIST */
+.members-panel { padding: 1rem; border-bottom: 1px solid var(--border); }
+.members-title { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 0.75rem; }
+.member-row { display: flex; align-items: center; gap: 8px; margin-bottom: 0.5rem; }
+.member-name { font-size: 0.84rem; }
+.member-status-dot { width: 8px; height: 8px; border-radius: 50%; background: #4caf50; margin-left: auto; }
+
+/* ===== MEDIA PAGE ===== */
+.media-layout { padding: 2rem; max-width: 1100px; margin: 0 auto; }
+.media-tabs { display: flex; gap: 0.5rem; margin: 1.5rem 0; }
+.media-tab {
+  padding: 8px 20px; border-radius: 20px; border: 1.5px solid var(--border);
+  background: transparent; font-family: 'DM Sans', sans-serif; font-size: 0.85rem;
+  cursor: pointer; font-weight: 500; color: var(--text-secondary); transition: all 0.2s;
+}
+.media-tab.active { background: var(--sage); color: white; border-color: var(--sage); }
+.media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1rem; }
+.media-item {
+  border-radius: var(--r-lg); overflow: hidden; position: relative;
+  background: var(--white); border: 1px solid var(--border); cursor: pointer;
+  transition: all 0.25s;
+}
+.media-item:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.media-thumb {
+  aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center;
+  font-size: 2.5rem;
+}
+.media-info { padding: 0.75rem 1rem; }
+.media-filename { font-size: 0.82rem; font-weight: 500; }
+.media-meta { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+.media-type-badge {
+  position: absolute; top: 8px; right: 8px; background: rgba(0,0,0,0.5);
+  color: white; font-size: 0.7rem; padding: 2px 6px; border-radius: 6px;
+}
+
+/* UPLOAD AREA */
+.media-upload-zone {
+  border: 2px dashed var(--border); border-radius: var(--r-lg);
+  padding: 2.5rem; text-align: center; cursor: pointer; transition: all 0.2s;
+  background: var(--cream); margin-bottom: 1.5rem;
+}
+.media-upload-zone:hover { border-color: var(--sage); background: var(--sage-light); }
+.upload-icon { font-size: 2.5rem; margin-bottom: 0.75rem; }
+.upload-title { font-weight: 600; margin-bottom: 0.4rem; }
+.upload-sub { font-size: 0.84rem; color: var(--text-secondary); }
+
+/* ===== POMODORO FLOATING WIDGET ===== */
+.pomo-widget {
+  position: fixed; right: 1.5rem; bottom: 1.5rem; z-index: 150;
+}
+.pomo-toggle {
+  width: 56px; height: 56px; border-radius: 50%; background: var(--sage);
+  border: none; color: white; font-size: 1.4rem; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(74,124,89,0.35); transition: all 0.25s;
+  display: flex; align-items: center; justify-content: center;
+}
+.pomo-toggle:hover { transform: scale(1.1); background: #3d6b4b; }
+.pomo-panel {
+  display: none; position: absolute; bottom: 70px; right: 0;
+  width: 280px; background: var(--white); border-radius: var(--r-xl);
+  box-shadow: var(--shadow-lg); border: 1px solid var(--border); overflow: hidden;
+}
+.pomo-panel.open { display: block; }
+.pomo-header {
+  background: var(--slate); color: white; padding: 1rem 1.25rem;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.pomo-header-title { font-weight: 600; font-size: 0.9rem; }
+.pomo-close { background: none; border: none; color: rgba(255,255,255,0.7); cursor: pointer; font-size: 1rem; }
+.pomo-body { padding: 1.25rem; }
+.pomo-mode-tabs { display: flex; gap: 4px; background: var(--slate-light); border-radius: 10px; padding: 3px; margin-bottom: 1.25rem; }
+.pomo-mode {
+  flex: 1; padding: 6px; text-align: center; border-radius: 8px;
+  font-size: 0.75rem; font-weight: 500; cursor: pointer; transition: all 0.2s;
+  border: none; background: transparent; color: var(--text-secondary); font-family: 'DM Sans', sans-serif;
+}
+.pomo-mode.active { background: var(--white); color: var(--sage); box-shadow: 0 1px 4px rgba(0,0,0,0.08); }
+.pomo-clock {
+  text-align: center; margin: 1rem 0;
+}
+.pomo-time {
+  font-family: 'Fraunces', serif; font-size: 3rem; font-weight: 300;
+  color: var(--text-primary); letter-spacing: -1px;
+}
+.pomo-session-label { font-size: 0.78rem; color: var(--text-muted); margin-top: 4px; }
+.pomo-controls { display: flex; gap: 0.5rem; justify-content: center; margin-bottom: 1rem; }
+.pomo-btn {
+  padding: 9px 20px; border-radius: 20px; border: none; font-family: 'DM Sans', sans-serif;
+  font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: all 0.2s;
+}
+.pomo-start { background: var(--sage); color: white; }
+.pomo-start:hover { background: #3d6b4b; }
+.pomo-reset { background: var(--slate-light); color: var(--text-secondary); }
+.pomo-log-btn {
+  width: 100%; padding: 9px; border-radius: var(--r-md); background: var(--amber-light);
+  color: var(--amber); border: 1.5px solid #f0c887; font-family: 'DM Sans', sans-serif;
+  font-size: 0.82rem; font-weight: 500; cursor: pointer; margin-bottom: 1rem; transition: all 0.2s;
+}
+.pomo-log-btn:hover { background: #fce8c4; }
+.pomo-history { border-top: 1px solid var(--border); padding-top: 1rem; }
+.pomo-history-title { font-size: 0.78rem; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.4px; margin-bottom: 0.75rem; }
+.pomo-session-item { display: flex; align-items: center; gap: 8px; padding: 6px 0; border-bottom: 1px solid var(--border); }
+.pomo-session-item:last-child { border-bottom: none; }
+.pomo-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--sage); flex-shrink: 0; }
+.pomo-session-info { flex: 1; }
+.pomo-session-name { font-size: 0.8rem; font-weight: 500; }
+.pomo-session-time { font-size: 0.72rem; color: var(--text-muted); }
+.pomo-session-dur { font-size: 0.78rem; font-weight: 600; color: var(--sage); }
+
+/* Progress ring */
+.pomo-ring-wrap { position: relative; display: inline-block; margin: 0.5rem 0; }
+.pomo-ring { transform: rotate(-90deg); }
+.pomo-ring-bg { fill: none; stroke: var(--border); stroke-width: 4; }
+.pomo-ring-fill { fill: none; stroke: var(--sage); stroke-width: 4; stroke-linecap: round; stroke-dasharray: 251.2; stroke-dashoffset: 165; transition: stroke-dashoffset 1s; }
+
+/* NOTIFICATIONS */
+.notification {
+  position: fixed; top: 76px; right: 1.5rem; z-index: 300;
+  background: var(--white); border: 1px solid var(--border); border-radius: var(--r-lg);
+  padding: 1rem 1.25rem; box-shadow: var(--shadow-lg); min-width: 260px;
+  transform: translateX(120%); transition: transform 0.3s ease;
+}
+.notification.show { transform: translateX(0); }
+.notif-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 2px; }
+.notif-msg { font-size: 0.82rem; color: var(--text-secondary); }
+
+/* TABS FILTER */
+.filter-tabs { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.filter-tab {
+  padding: 6px 14px; border-radius: 16px; font-size: 0.8rem;
+  border: 1px solid var(--border); background: var(--white); cursor: pointer;
+  font-family: 'DM Sans', sans-serif; font-weight: 500; transition: all 0.2s;
+}
+.filter-tab.active { background: var(--sage); color: white; border-color: var(--sage); }
+
+/* CODE SHARE */
+.room-code {
+  background: var(--slate-light); border-radius: var(--r-md);
+  padding: 0.75rem 1rem; display: flex; align-items: center; justify-content: space-between;
+  margin-top: 1rem;
+}
+.room-code-val { font-family: monospace; font-size: 1rem; font-weight: 700; letter-spacing: 2px; color: var(--slate); }
+.copy-btn { font-size: 0.78rem; padding: 4px 10px; border-radius: 8px; background: var(--sage); color: white; border: none; cursor: pointer; }
+
+/* AI Processing */
+.ai-processing {
+  display: flex; flex-direction: column; align-items: center; gap: 0.75rem;
+  padding: 1.5rem; text-align: center;
+}
+.ai-spinner {
+  width: 40px; height: 40px; border: 3px solid var(--sage-light);
+  border-top-color: var(--sage); border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.ai-text { font-size: 0.85rem; color: var(--text-secondary); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .cal-layout { grid-template-columns: 1fr; }
+  .cal-sidebar { display: none; }
+  .room-view-layout { grid-template-columns: 1fr; }
+}
+
+/* Animations */
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+.page.active { animation: fadeIn 0.3s ease; }
+</style>
+</head>
+<body>
+
+<!-- NAVIGATION -->
+<nav>
+  <div class="nav-logo">Study<span>Flow</span></div>
+  <div class="nav-links">
+    <button class="nav-btn active" onclick="showPage('home')">Home</button>
+    <button class="nav-btn" onclick="showPage('calendar')">Calendar</button>
+    <button class="nav-btn" onclick="showPage('activities')">Activities</button>
+    <button class="nav-btn" onclick="showPage('rooms')">Study Rooms</button>
+    <button class="nav-btn" onclick="showPage('media')">Gallery</button>
+  </div>
+  <div class="nav-user" title="Your profile">JS</div>
+</nav>
+
+<!-- NOTIFICATION -->
+<div class="notification" id="notification">
+  <div class="notif-title" id="notif-title">Session saved!</div>
+  <div class="notif-msg" id="notif-msg">Your study session has been added to the calendar.</div>
+</div>
+
+<!-- ==================== HOME PAGE ==================== -->
+<div class="page active" id="page-home">
+  <div class="home-hero">
+    <div class="quote-badge">Daily Motivation</div>
+    <div class="hero-quote" id="daily-quote">Loading today's quote...</div>
+    <div class="hero-quote-author" id="daily-author"></div>
+    <div class="hero-actions">
+      <button class="btn-primary" onclick="showPage('calendar')">📅 Open Calendar</button>
+      <button class="btn-outline" onclick="showPage('rooms')">🚪 Join a Study Room</button>
+    </div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat-item"><div class="stat-num" id="stat-sessions">0</div><div class="stat-label">Study Sessions</div></div>
+    <div class="stat-item"><div class="stat-num" id="stat-hours">0h</div><div class="stat-label">Total Hours</div></div>
+    <div class="stat-item"><div class="stat-num">3</div><div class="stat-label">Active Rooms</div></div>
+    <div class="stat-item"><div class="stat-num">12</div><div class="stat-label">Activities Available</div></div>
+  </div>
+
+  <div class="home-grid">
+    <div class="home-card" onclick="showPage('calendar')">
+      <div class="home-card-icon" style="background:#e8f0eb;">📅</div>
+      <h3>Smart Calendar</h3>
+      <p>Track study sessions and upload your schedule. AI will organise everything for you.</p>
+      <span class="home-card-tag" style="background:#e8f0eb;color:var(--sage);">AI-Powered</span>
+    </div>
+    <div class="home-card" onclick="showPage('activities')">
+      <div class="home-card-icon" style="background:#fdf3e7;">🎯</div>
+      <h3>Activities</h3>
+      <p>Discover events and activities uploaded by admins. Add them to your calendar with one click.</p>
+      <span class="home-card-tag" style="background:#fdf3e7;color:var(--amber);">New Events</span>
+    </div>
+    <div class="home-card" onclick="showPage('rooms')">
+      <div class="home-card-icon" style="background:#eef1f5;">🚪</div>
+      <h3>Study Rooms</h3>
+      <p>Create or join private study rooms with a unique code. Study together with music!</p>
+      <span class="home-card-tag" style="background:#eef1f5;color:var(--slate);">Live</span>
+    </div>
+    <div class="home-card" onclick="showPage('media')">
+      <div class="home-card-icon" style="background:#fbeaea;">📸</div>
+      <h3>Life Gallery</h3>
+      <p>Share your study and life moments. Photos and videos — because balance matters.</p>
+      <span class="home-card-tag" style="background:#fbeaea;color:var(--blush);">Work-Life Balance</span>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== CALENDAR PAGE ==================== -->
+<div class="page" id="page-calendar">
+  <div class="cal-layout">
+    <div class="cal-main">
+      <div class="cal-header">
+        <div>
+          <div class="cal-title" id="cal-month-title">May 2025</div>
+          <div style="font-size:0.82rem;color:var(--text-muted);margin-top:2px;">Click a day to view events</div>
+        </div>
+        <div class="cal-nav">
+          <button onclick="changeMonth(-1)">‹</button>
+          <button onclick="changeMonth(1)">›</button>
+        </div>
+      </div>
+      <div class="cal-grid" id="cal-grid"></div>
+    </div>
+
+    <div class="cal-sidebar">
+      <div style="font-weight:600;font-size:1rem;margin-bottom:1rem;" id="sidebar-date-title">Today's Events</div>
+      <div class="cal-events-list" id="sidebar-events">
+        <div style="color:var(--text-muted);font-size:0.84rem;text-align:center;padding:1.5rem 0;">
+          No events for today.<br>Upload your schedule below!
+        </div>
+      </div>
+
+      <!-- Upload Schedule -->
+      <div style="margin-top:1.5rem;">
+        <div style="font-weight:600;font-size:0.9rem;margin-bottom:0.5rem;">📤 Upload Schedule</div>
+        <div style="font-size:0.8rem;color:var(--text-secondary);margin-bottom:0.75rem;">AI will read your timetable and add it to the calendar automatically.</div>
+        <div class="upload-box" id="schedule-upload-box" onclick="triggerScheduleUpload()">
+          <div class="upload-box-icon">🤖</div>
+          <p><strong>Click to upload</strong><br>PDF, image, or text file</p>
+        </div>
+        <input type="file" id="schedule-file-input" style="display:none" accept=".pdf,.png,.jpg,.txt,.docx" onchange="processScheduleUpload(this)">
+        <div id="ai-process-area" style="display:none"></div>
+      </div>
+
+      <!-- Legend -->
+      <div style="margin-top:1.5rem;padding-top:1rem;border-top:1px solid var(--border);">
+        <div style="font-size:0.78rem;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.4px;margin-bottom:0.75rem;">Legend</div>
+        <div style="display:flex;flex-direction:column;gap:6px;font-size:0.8rem;">
+          <div style="display:flex;align-items:center;gap:8px;"><div style="width:12px;height:12px;border-radius:50%;background:var(--sage)"></div>Study Sessions</div>
+          <div style="display:flex;align-items:center;gap:8px;"><div style="width:12px;height:12px;border-radius:50%;background:var(--amber)"></div>Activities & Events</div>
+          <div style="display:flex;align-items:center;gap:8px;"><div style="width:12px;height:12px;border-radius:50%;background:var(--blush)"></div>Uploaded Schedule</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ACTIVITIES PAGE ==================== -->
+<div class="page" id="page-activities">
+  <div class="activities-layout">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Activities & Events</div>
+        <div class="page-subtitle">Discover events and add them to your calendar</div>
+      </div>
+      <div style="display:flex;gap:0.75rem;align-items:center;">
+        <span class="admin-badge">Admin Panel</span>
+        <button class="btn-primary" onclick="openModal('add-activity-modal')">+ Add Activity</button>
+      </div>
+    </div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.5rem;">
+      <div class="filter-tabs">
+        <button class="filter-tab active" onclick="filterActivities('all',this)">All</button>
+        <button class="filter-tab" onclick="filterActivities('workshop',this)">Workshops</button>
+        <button class="filter-tab" onclick="filterActivities('social',this)">Social</button>
+        <button class="filter-tab" onclick="filterActivities('sports',this)">Sports</button>
+        <button class="filter-tab" onclick="filterActivities('academic',this)">Academic</button>
+      </div>
+      <div style="font-size:0.82rem;color:var(--text-muted);" id="activity-count">Showing all 6 activities</div>
+    </div>
+
+    <div class="activities-grid" id="activities-grid"></div>
+  </div>
+</div>
+
+<!-- ==================== STUDY ROOMS PAGE ==================== -->
+<div class="page" id="page-rooms">
+  <!-- Room List View -->
+  <div id="rooms-list-view">
+    <div class="rooms-layout">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Study Rooms</div>
+          <div class="page-subtitle">Study together — create a room or join with a code</div>
+        </div>
+        <div style="display:flex;gap:0.75rem;">
+          <button class="btn-outline" onclick="openModal('join-room-modal')">🔑 Join with Code</button>
+          <button class="btn-primary" onclick="openModal('create-room-modal')">+ Create Room</button>
+        </div>
+      </div>
+
+      <div class="rooms-grid" id="rooms-grid"></div>
+    </div>
+  </div>
+
+  <!-- Room Inner View -->
+  <div class="room-view" id="room-inner-view">
+    <div class="room-view-layout">
+      <!-- Main area -->
+      <div class="room-main">
+        <div style="display:flex;align-items:center;gap:1rem;padding-bottom:1rem;border-bottom:1px solid var(--border);">
+          <button class="btn-sm btn-ghost" onclick="leaveRoom()">← Back</button>
+          <div>
+            <div style="font-weight:600;font-size:1.05rem;" id="active-room-name">CS2040 Study Group</div>
+            <div style="font-size:0.8rem;color:var(--text-muted);">4 members online</div>
+          </div>
+          <div style="margin-left:auto;display:flex;align-items:center;gap:0.75rem;">
+            <div style="font-size:0.8rem;color:var(--text-muted);">Room Code:</div>
+            <div class="room-code" style="margin:0;padding:4px 12px;">
+              <span class="room-code-val" id="active-room-code">ABC123</span>
+              <button class="copy-btn" onclick="copyCode()">Copy</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pomodoro in room -->
+        <div style="background:var(--sage-light);border-radius:var(--r-lg);padding:1.25rem;display:flex;align-items:center;gap:1.5rem;">
+          <div style="text-align:center;">
+            <div style="font-family:'Fraunces',serif;font-size:2rem;font-weight:300;" id="room-pomo-time">25:00</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);">Group Pomodoro</div>
+          </div>
+          <div style="flex:1;">
+            <div style="font-weight:600;font-size:0.9rem;margin-bottom:0.4rem;">🍅 Group Focus Timer</div>
+            <div style="font-size:0.82rem;color:var(--text-secondary);margin-bottom:0.75rem;">Study together! When the host starts the timer, everyone stays in sync.</div>
+            <div style="display:flex;gap:0.5rem;">
+              <button class="btn-sm btn-sage" onclick="toggleRoomPomo()">▶ Start Focus</button>
+              <button class="btn-sm btn-ghost" onclick="resetRoomPomo()">Reset</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Music Player -->
+        <div class="music-player">
+          <div class="music-header">
+            <span class="music-title">🎵 Room Music</span>
+            <span class="music-badge">● Live • Sync</span>
+          </div>
+          <div class="music-track">
+            <div class="music-art" id="music-art">🎵</div>
+            <div class="music-info">
+              <div class="music-song" id="music-song">Lo-Fi Study Beats Vol. 1</div>
+              <div class="music-artist" id="music-artist">Chillhop Essentials</div>
+            </div>
+          </div>
+          <div class="music-progress" onclick="seekMusic(event)">
+            <div class="music-fill" id="music-fill"></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;font-size:0.72rem;opacity:0.6;margin-bottom:0.75rem;">
+            <span id="music-current">1:24</span><span id="music-total">3:47</span>
+          </div>
+          <div class="music-controls">
+            <button class="music-btn" onclick="prevTrack()" title="Previous">⏮</button>
+            <button class="music-btn" onclick="shuffleTrack()" title="Shuffle">🔀</button>
+            <button class="music-btn play-btn" id="play-btn" onclick="togglePlay()">▶</button>
+            <button class="music-btn" onclick="nextTrack()" title="Next">⏭</button>
+            <button class="music-btn" onclick="toggleLoop()" title="Loop" id="loop-btn">🔁</button>
+          </div>
+          <div class="music-queue">
+            <div class="music-queue-title">UP NEXT</div>
+            <div id="music-queue-list"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="room-sidebar">
+        <div class="members-panel">
+          <div class="members-title">Online Members</div>
+          <div id="room-members-list"></div>
+        </div>
+        <div class="room-chat">
+          <div class="chat-header">💬 Room Chat</div>
+          <div class="chat-messages" id="chat-messages"></div>
+          <div class="chat-input-area">
+            <input class="chat-input" id="chat-input" placeholder="Send a message..." onkeydown="if(event.key==='Enter')sendChat()">
+            <button class="chat-send" onclick="sendChat()">➤</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== MEDIA / GALLERY PAGE ==================== -->
+<div class="page" id="page-media">
+  <div class="media-layout">
+    <div class="page-header">
+      <div>
+        <div class="page-title">Life Gallery</div>
+        <div class="page-subtitle">Share your study and life moments — balance is everything 🌱</div>
+      </div>
+    </div>
+
+    <div class="media-upload-zone" id="media-upload-zone" onclick="triggerMediaUpload()">
+      <div class="upload-icon">📸</div>
+      <div class="upload-title">Upload Photos & Videos</div>
+      <div class="upload-sub">Share your study setup, campus life, breaks, and adventures!<br><small>PNG, JPG, MP4, MOV • Max 50MB</small></div>
+    </div>
+    <input type="file" id="media-file-input" style="display:none" accept="image/*,video/*" multiple onchange="handleMediaUpload(this)">
+
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:1rem;margin-bottom:1.25rem;">
+      <div class="media-tabs">
+        <button class="media-tab active" onclick="filterMedia('all',this)">All</button>
+        <button class="media-tab" onclick="filterMedia('study',this)">📚 Study</button>
+        <button class="media-tab" onclick="filterMedia('life',this)">🌸 Life</button>
+        <button class="media-tab" onclick="filterMedia('video',this)">🎬 Videos</button>
+      </div>
+      <div style="font-size:0.82rem;color:var(--text-muted);" id="media-count">8 items</div>
+    </div>
+
+    <div class="media-grid" id="media-grid"></div>
+  </div>
+</div>
+
+<!-- ==================== POMODORO FLOATING WIDGET ==================== -->
+<div class="pomo-widget">
+  <div class="pomo-panel" id="pomo-panel">
+    <div class="pomo-header">
+      <span class="pomo-header-title">🍅 Pomodoro Timer</span>
+      <button class="pomo-close" onclick="togglePomo()">✕</button>
+    </div>
+    <div class="pomo-body">
+      <div class="pomo-mode-tabs">
+        <button class="pomo-mode active" onclick="setPomoMode('focus',this)">Focus</button>
+        <button class="pomo-mode" onclick="setPomoMode('short',this)">Short Break</button>
+        <button class="pomo-mode" onclick="setPomoMode('long',this)">Long Break</button>
+      </div>
+      <div class="pomo-clock">
+        <div class="pomo-ring-wrap">
+          <svg class="pomo-ring" width="90" height="90" viewBox="0 0 90 90">
+            <circle class="pomo-ring-bg" cx="45" cy="45" r="40"/>
+            <circle class="pomo-ring-fill" id="pomo-ring-fill" cx="45" cy="45" r="40"/>
+          </svg>
+          <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+            <div class="pomo-time" style="font-size:1.5rem;" id="pomo-display">25:00</div>
+          </div>
+        </div>
+        <div class="pomo-session-label" id="pomo-label">Focus session • Round 1</div>
+      </div>
+      <div class="pomo-controls">
+        <button class="pomo-btn pomo-start" id="pomo-start-btn" onclick="togglePomoTimer()">▶ Start</button>
+        <button class="pomo-btn pomo-reset" onclick="resetPomoTimer()">↺ Reset</button>
+      </div>
+      <button class="pomo-log-btn" onclick="logPomoSession()">📋 Log to Calendar</button>
+      <div class="pomo-history">
+        <div class="pomo-history-title">Today's Sessions</div>
+        <div id="pomo-sessions-list">
+          <div style="font-size:0.78rem;color:var(--text-muted);text-align:center;padding:0.5rem;">No sessions yet — start focusing!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <button class="pomo-toggle" onclick="togglePomo()" title="Pomodoro Timer">🍅</button>
+</div>
+
+<!-- ==================== MODALS ==================== -->
+<!-- Create Room Modal -->
+<div class="modal-overlay" id="create-room-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Create Study Room</div>
+      <button class="modal-close" onclick="closeModal('create-room-modal')">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Room Name</label>
+      <input class="form-input" id="new-room-name" placeholder="e.g. CS2040 Finals Prep">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Subject / Description</label>
+      <textarea class="form-input form-textarea" id="new-room-desc" placeholder="What will you be studying?"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Max Members</label>
+      <select class="form-input" id="new-room-max">
+        <option>2</option><option>4</option><option selected>6</option><option>10</option>
+      </select>
+    </div>
+    <button class="btn-primary" style="width:100%;" onclick="createRoom()">🚪 Create Room & Get Code</button>
+  </div>
+</div>
+
+<!-- Join Room Modal -->
+<div class="modal-overlay" id="join-room-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Join a Study Room</div>
+      <button class="modal-close" onclick="closeModal('join-room-modal')">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Room Code</label>
+      <input class="form-input" id="join-code-input" placeholder="Enter 6-character code (e.g. ABC123)" style="font-family:monospace;font-size:1.1rem;letter-spacing:2px;text-transform:uppercase">
+    </div>
+    <button class="btn-primary" style="width:100%;" onclick="joinRoomByCode()">🔑 Join Room</button>
+  </div>
+</div>
+
+<!-- Add Activity Modal (Admin) -->
+<div class="modal-overlay" id="add-activity-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">Add Activity <span class="admin-badge" style="font-family:'DM Sans',sans-serif;">Admin</span></div>
+      <button class="modal-close" onclick="closeModal('add-activity-modal')">✕</button>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Activity Title</label>
+      <input class="form-input" id="act-title" placeholder="e.g. Resume Writing Workshop">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <textarea class="form-input form-textarea" id="act-desc" placeholder="Describe the activity..."></textarea>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;">
+      <div class="form-group">
+        <label class="form-label">Date</label>
+        <input class="form-input" id="act-date" type="date">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Time</label>
+        <input class="form-input" id="act-time" type="time">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Category</label>
+      <select class="form-input" id="act-cat">
+        <option value="workshop">Workshop</option>
+        <option value="social">Social</option>
+        <option value="sports">Sports</option>
+        <option value="academic">Academic</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Emoji Icon</label>
+      <input class="form-input" id="act-emoji" placeholder="e.g. 📝" maxlength="2" value="🎯">
+    </div>
+    <button class="btn-primary" style="width:100%;" onclick="addActivity()">✅ Publish Activity</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const quotes = [
+  { q: "The secret of getting ahead is getting started.", a: "Mark Twain" },
+  { q: "It always seems impossible until it's done.", a: "Nelson Mandela" },
+  { q: "Don't watch the clock; do what it does. Keep going.", a: "Sam Levenson" },
+  { q: "Push yourself, because no one else is going to do it for you.", a: "Unknown" },
+  { q: "Great things never come from comfort zones.", a: "Neil Strauss" },
+  { q: "Study hard what interests you the most in the most undisciplined, irreverent and original manner possible.", a: "Richard Feynman" },
+  { q: "The expert in anything was once a beginner.", a: "Helen Hayes" },
+  { q: "Believe you can and you're halfway there.", a: "Theodore Roosevelt" },
+  { q: "Success is the sum of small efforts, repeated day in and day out.", a: "Robert Collier" },
+  { q: "You don't have to be great to start, but you have to start to be great.", a: "Zig Ziglar" },
+  { q: "Education is the most powerful weapon which you can use to change the world.", a: "Nelson Mandela" },
+  { q: "The beautiful thing about learning is that nobody can take it away from you.", a: "B.B. King" },
+  { q: "An investment in knowledge pays the best interest.", a: "Benjamin Franklin" },
+  { q: "Learning is not attained by chance; it must be sought for with ardor and attended to with diligence.", a: "Abigail Adams" },
+  { q: "Intelligence plus character — that is the goal of true education.", a: "Martin Luther King Jr." },
+  { q: "The more that you read, the more things you will know.", a: "Dr. Seuss" },
+  { q: "Live as if you were to die tomorrow. Learn as if you were to live forever.", a: "Mahatma Gandhi" },
+  { q: "In learning you will teach, and in teaching you will learn.", a: "Phil Collins" },
+  { q: "The mind is not a vessel to be filled but a fire to be kindled.", a: "Plutarch" },
+  { q: "Develop a passion for learning. If you do, you will never cease to grow.", a: "Anthony J. D'Angelo" },
+  { q: "Work hard in silence, let your success be your noise.", a: "Frank Ocean" },
+  { q: "What we learn with pleasure we never forget.", a: "Alfred Mercier" },
+  { q: "The only way to do great work is to love what you do.", a: "Steve Jobs" },
+  { q: "Dream big, work hard, stay focused, and surround yourself with good people.", a: "Unknown" },
+  { q: "Excellence is not a destination but a continuous journey that never ends.", a: "Brian Tracy" },
+  { q: "You are braver than you believe, stronger than you seem, and smarter than you think.", a: "A.A. Milne" },
+  { q: "The future depends on what you do today.", a: "Mahatma Gandhi" },
+  { q: "Hard work beats talent when talent doesn't work hard.", a: "Tim Notke" },
+  { q: "Success usually comes to those who are too busy to be looking for it.", a: "Henry David Thoreau" },
+  { q: "Don't let yesterday take up too much of today.", a: "Will Rogers" },
+  { q: "Your limitation — it's only your imagination.", a: "Unknown" }
+];
+
+let activities = [
+  { id: 1, title: "Resume Writing Workshop", desc: "Learn how to craft a compelling resume with guidance from career advisors. All years welcome!", date: "2025-06-15", time: "14:00", cat: "workshop", emoji: "📝", slots: 30, joined: 12, inCalendar: false },
+  { id: 2, title: "Campus Sports Day", desc: "Annual sports day — participate in football, frisbee, badminton and more!", date: "2025-06-20", time: "09:00", cat: "sports", emoji: "⚽", slots: 100, joined: 67, inCalendar: false },
+  { id: 3, title: "Machine Learning Study Jam", desc: "Collaborative deep dive into ML fundamentals. Bring your laptop and questions!", date: "2025-06-10", time: "18:00", cat: "academic", emoji: "🤖", slots: 25, joined: 18, inCalendar: false },
+  { id: 4, title: "International Food Fair", desc: "Taste cuisine from 20+ countries! Fun for everyone — free entry for students.", date: "2025-06-25", time: "11:00", cat: "social", emoji: "🍜", slots: 200, joined: 154, inCalendar: false },
+  { id: 5, title: "Public Speaking Bootcamp", desc: "2-hour intensive workshop on presentation skills and managing stage fright.", date: "2025-06-12", time: "15:30", cat: "workshop", emoji: "🎤", slots: 20, joined: 9, inCalendar: false },
+  { id: 6, title: "Evening Yoga on the Lawn", desc: "Unwind after exams — a relaxing evening yoga session for all skill levels.", date: "2025-06-18", time: "18:30", cat: "sports", emoji: "🧘", slots: 40, joined: 22, inCalendar: false }
+];
+
+let rooms = [
+  { id: 1, name: "CS2040 Finals Prep", desc: "Data structures and algorithms cramming. All welcome!", code: "CS2040", members: ["JS", "AK", "LM", "RN"], max: 6, subject: "Computer Science" },
+  { id: 2, name: "MA1101 Linear Algebra", desc: "Working through past year papers. Bring your own notes!", code: "MA1101", members: ["PT", "SK"], max: 4, subject: "Mathematics" },
+  { id: 3, name: "Chill & Study Lounge", desc: "Background lo-fi, muted vibes. Just here to stay accountable.", code: "CHILL9", members: ["YH", "BW", "NQ", "AI", "RF"], max: 10, subject: "Any" }
+];
+
+let mediaItems = [
+  { id: 1, name: "Library setup 📚", type: "study", file: "photo", emoji: "📚", color: "#e8f0eb", user: "Jordan S.", date: "Today" },
+  { id: 2, name: "Sunset from CLB rooftop", type: "life", file: "photo", emoji: "🌅", color: "#fdf3e7", user: "Alex K.", date: "Yesterday" },
+  { id: 3, name: "Group project marathon", type: "study", file: "photo", emoji: "💻", color: "#eef1f5", user: "Lena M.", date: "3 days ago" },
+  { id: 4, name: "Mala hotpot break!", type: "life", file: "photo", emoji: "🍲", color: "#fbeaea", user: "Ryan N.", date: "4 days ago" },
+  { id: 5, name: "Coding all-nighter 2am", type: "study", file: "photo", emoji: "😅", color: "#e8f0eb", user: "Jordan S.", date: "Last week" },
+  { id: 6, name: "Cat cafe study date", type: "life", file: "photo", emoji: "🐱", color: "#fdf3e7", user: "Pat T.", date: "Last week" },
+  { id: 7, name: "Study room timelapse", type: "study", file: "video", emoji: "🎬", color: "#eef1f5", user: "Alex K.", date: "Last week" },
+  { id: 8, name: "Campus morning jog", type: "life", file: "video", emoji: "🏃", color: "#fbeaea", user: "Lena M.", date: "2 weeks ago" }
+];
+
+let calEvents = {};
+let pomodoroSessions = [];
+let totalStudySeconds = 0;
+
+// Music tracks
+const tracks = [
+  { title: "Lo-Fi Study Beats Vol. 1", artist: "Chillhop Essentials", emoji: "🎵", duration: "3:47" },
+  { title: "Rain on Window Ambience", artist: "Nature Sounds", emoji: "🌧️", duration: "4:22" },
+  { title: "Midnight Tokyo Chill", artist: "Nujabes Tribute", emoji: "🌃", duration: "3:14" },
+  { title: "Coffee Shop Jazz", artist: "Blue Note Sessions", emoji: "☕", duration: "5:01" },
+  { title: "Deep Focus Flow", artist: "Brainfm Classics", emoji: "🧠", duration: "4:38" },
+  { title: "Forest Whitenoise", artist: "Ambient Earth", emoji: "🌲", duration: "6:00" }
+];
+let currentTrack = 0;
+let isPlaying = false;
+let musicProgress = 35;
+let musicInterval = null;
+
+// Pomodoro
+const POMO_MODES = { focus: 25*60, short: 5*60, long: 15*60 };
+let pomoMode = 'focus';
+let pomoTimeLeft = 25*60;
+let pomoRunning = false;
+let pomoInterval = null;
+let pomoRound = 1;
+
+// Calendar
+let calYear = 2025;
+let calMonth = 4; // May
+
+// ============================================================
+// INIT
+// ============================================================
+window.onload = function() {
+  setDailyQuote();
+  renderCalendar();
+  renderActivities();
+  renderRooms();
+  renderMedia();
+  renderMusicQueue();
+};
+
+// ============================================================
+// DAILY QUOTE
+// ============================================================
+function setDailyQuote() {
+  const day = new Date().getDate() + new Date().getMonth() * 31;
+  const q = quotes[day % quotes.length];
+  document.getElementById('daily-quote').textContent = '"' + q.q + '"';
+  document.getElementById('daily-author').textContent = q.a;
+}
+
+// ============================================================
+// PAGE NAVIGATION
+// ============================================================
+function showPage(page) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('page-' + page).classList.add('active');
+  const btns = document.querySelectorAll('.nav-btn');
+  const names = ['home','calendar','activities','rooms','media'];
+  const idx = names.indexOf(page);
+  if(idx >= 0) btns[idx].classList.add('active');
+  // If leaving rooms, hide room inner view
+  if(page !== 'rooms') {
+    document.getElementById('rooms-list-view').style.display = '';
+    document.getElementById('room-inner-view').classList.remove('open');
+  }
+}
+
+// ============================================================
+// CALENDAR
+// ============================================================
+function renderCalendar() {
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('cal-month-title').textContent = months[calMonth] + ' ' + calYear;
+  const grid = document.getElementById('cal-grid');
+  grid.innerHTML = '';
+  ['SUN','MON','TUE','WED','THU','FRI','SAT'].forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'cal-day-name'; el.textContent = d;
+    grid.appendChild(el);
+  });
+  const firstDay = new Date(calYear, calMonth, 1).getDay();
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+  const daysInPrev = new Date(calYear, calMonth, 0).getDate();
+  const today = new Date();
+  // Prev month tail
+  for(let i = firstDay - 1; i >= 0; i--) {
+    const d = createDayCell(daysInPrev - i, true, false, false, false, calYear, calMonth-1);
+    grid.appendChild(d);
+  }
+  // Current month
+  for(let i = 1; i <= daysInMonth; i++) {
+    const isToday = today.getDate()===i && today.getMonth()===calMonth && today.getFullYear()===calYear;
+    const key = calYear+'-'+(calMonth+1)+'-'+i;
+    const hasEv = calEvents[key] && calEvents[key].length > 0;
+    const hasSess = pomodoroSessions.some(s => s.dateKey === key);
+    const d = createDayCell(i, false, isToday, hasEv, hasSess, calYear, calMonth);
+    grid.appendChild(d);
+  }
+  // Fill remainder
+  const totalCells = Math.ceil((firstDay + daysInMonth) / 7) * 7;
+  let nextDay = 1;
+  for(let i = firstDay + daysInMonth; i < totalCells; i++, nextDay++) {
+    const d = createDayCell(nextDay, true, false, false, false, calYear, calMonth+1);
+    grid.appendChild(d);
+  }
+}
+
+function createDayCell(num, otherMonth, isToday, hasEv, hasSess, yr, mo) {
+  const el = document.createElement('div');
+  el.className = 'cal-day' + (otherMonth?' other-month':'') + (isToday?' today':'') + (hasEv?' has-event':'') + (hasSess?' has-session':'');
+  const numEl = document.createElement('div');
+  numEl.className = 'cal-day-num'; numEl.textContent = num;
+  el.appendChild(numEl);
+  el.onclick = () => showDayEvents(yr, mo, num, otherMonth);
+  return el;
+}
+
+function changeMonth(dir) {
+  calMonth += dir;
+  if(calMonth > 11) { calMonth = 0; calYear++; }
+  if(calMonth < 0) { calMonth = 11; calYear--; }
+  renderCalendar();
+}
+
+function showDayEvents(yr, mo, day, other) {
+  if(other) return;
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  document.getElementById('sidebar-date-title').textContent = months[mo] + ' ' + day + ', ' + yr;
+  const key = yr+'-'+(mo+1)+'-'+day;
+  const evts = calEvents[key] || [];
+  const sessions = pomodoroSessions.filter(s => s.dateKey === key);
+  const container = document.getElementById('sidebar-events');
+  container.innerHTML = '';
+  if(evts.length === 0 && sessions.length === 0) {
+    container.innerHTML = '<div style="color:var(--text-muted);font-size:0.84rem;text-align:center;padding:1.5rem 0;">No events this day.</div>';
+    return;
+  }
+  sessions.forEach(s => {
+    const el = document.createElement('div');
+    el.className = 'cal-event-item session';
+    el.innerHTML = '<div class="cal-event-title">🍅 ' + s.label + '</div><div class="cal-event-time">' + s.time + ' — ' + s.duration + '</div>';
+    container.appendChild(el);
+  });
+  evts.forEach(e => {
+    const el = document.createElement('div');
+    el.className = 'cal-event-item' + (e.type==='activity'?' activity':'');
+    el.innerHTML = '<div class="cal-event-title">' + (e.emoji||'📌') + ' ' + e.title + '</div><div class="cal-event-time">' + (e.time||'') + '</div>';
+    container.appendChild(el);
+  });
+}
+
+function addEventToCalendar(title, date, time, emoji, type) {
+  if(!date) return;
+  const parts = date.split('-');
+  if(parts.length < 3) return;
+  const key = parseInt(parts[0])+'-'+parseInt(parts[1])+'-'+parseInt(parts[2]);
+  if(!calEvents[key]) calEvents[key] = [];
+  calEvents[key].push({ title, time, emoji, type });
+  renderCalendar();
+}
+
+// ============================================================
+// SCHEDULE UPLOAD (AI)
+// ============================================================
+function triggerScheduleUpload() { document.getElementById('schedule-file-input').click(); }
+
+async function processScheduleUpload(input) {
+  if(!input.files[0]) return;
+  const file = input.files[0];
+  const area = document.getElementById('ai-process-area');
+  area.style.display = 'block';
+  area.innerHTML = '<div class="ai-processing"><div class="ai-spinner"></div><div class="ai-text">AI is reading your schedule…</div></div>';
+
+  // Read file as base64 if image/PDF
+  let content = [];
+  const ext = file.name.split('.').pop().toLowerCase();
+  const isImage = ['png','jpg','jpeg','gif','webp'].includes(ext);
+  const isPDF = ext === 'pdf';
+  const isText = ['txt','csv'].includes(ext);
+
+  if(isText) {
+    const text = await file.text();
+    content = [{ type: 'text', text: 'Here is my class schedule:\n\n' + text + '\n\nPlease extract all schedule entries. For each entry return a JSON array like: [{"title":"Subject name","date":"YYYY-MM-DD","time":"HH:MM","emoji":"📖"}]. Return ONLY the JSON array, nothing else.' }];
+  } else if(isImage) {
+    const b64 = await toBase64(file);
+    const mt = file.type || 'image/jpeg';
+    content = [
+      { type: 'image', source: { type: 'base64', media_type: mt, data: b64 } },
+      { type: 'text', text: 'This is a class schedule image. Please extract all schedule entries and return a JSON array like: [{"title":"Subject name","date":"YYYY-MM-DD","time":"HH:MM","emoji":"📖"}]. Use dates from the current month if none are visible. Return ONLY the JSON array, no explanation.' }
+    ];
+  } else {
+    // Fallback: just use filename as demo
+    content = [{ type: 'text', text: 'My schedule file is named: ' + file.name + '. Please generate a sample schedule for a university student with 5 entries for this week. Return as JSON array: [{"title":"Subject","date":"YYYY-MM-DD","time":"HH:MM","emoji":"📖"}]. Use dates in May-June 2025. Return ONLY the JSON array.' }];
+  }
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content }]
+      })
+    });
+    const data = await res.json();
+    const text = (data.content||[]).map(b => b.text||'').join('');
+    let entries = [];
+    try {
+      const clean = text.replace(/```json|```/g,'').trim();
+      entries = JSON.parse(clean);
+    } catch(e) {
+      // Extract JSON array from text
+      const match = text.match(/\[[\s\S]*\]/);
+      if(match) entries = JSON.parse(match[0]);
+    }
+    entries.forEach(e => addEventToCalendar(e.title, e.date, e.time, e.emoji||'📖', 'schedule'));
+    area.innerHTML = '<div style="background:var(--sage-light);border-radius:var(--r-md);padding:0.75rem 1rem;font-size:0.83rem;color:var(--sage);border:1px solid #b4d4be;">✅ AI added <strong>' + entries.length + ' events</strong> to your calendar!</div>';
+    showNotification('Schedule Imported!', 'AI added ' + entries.length + ' events to your calendar.');
+  } catch(err) {
+    area.innerHTML = '<div style="background:var(--blush-light);border-radius:var(--r-md);padding:0.75rem 1rem;font-size:0.83rem;color:var(--blush);">⚠️ Could not process file. Please try again.</div>';
+  }
+}
+
+function toBase64(file) {
+  return new Promise((res, rej) => {
+    const r = new FileReader();
+    r.onload = () => res(r.result.split(',')[1]);
+    r.onerror = rej;
+    r.readAsDataURL(file);
+  });
+}
+
+// ============================================================
+// ACTIVITIES
+// ============================================================
+const actColors = { workshop: '#e8f0eb', social: '#fdf3e7', sports: '#eef1f5', academic: '#fbeaea' };
+const memberColors = ['#4a7c59','#d4872a','#3a4a5c','#c4706a','#7aab8a'];
+
+function renderActivities(filter) {
+  const grid = document.getElementById('activities-grid');
+  const filtered = filter && filter !== 'all' ? activities.filter(a => a.cat === filter) : activities;
+  document.getElementById('activity-count').textContent = 'Showing ' + filtered.length + ' activities';
+  grid.innerHTML = '';
+  filtered.forEach(act => {
+    const pct = Math.round((act.joined / act.slots) * 100);
+    const card = document.createElement('div');
+    card.className = 'activity-card';
+    card.innerHTML = `
+      <div class="activity-img" style="background:linear-gradient(135deg,${actColors[act.cat]||'#e8f0eb'},#fff);">
+        <span style="font-size:3rem;">${act.emoji}</span>
+        <span class="activity-badge">${act.cat.charAt(0).toUpperCase()+act.cat.slice(1)}</span>
+      </div>
+      <div class="activity-body">
+        <div class="activity-title">${act.title}</div>
+        <div class="activity-desc">${act.desc}</div>
+        <div class="activity-meta">
+          <span>📅 ${formatDate(act.date)}</span>
+          <span>🕐 ${act.time}</span>
+          <span>👥 ${act.joined}/${act.slots}</span>
+        </div>
+        <div style="height:4px;background:var(--border);border-radius:2px;margin-bottom:1rem;">
+          <div style="height:100%;width:${pct}%;background:var(--sage);border-radius:2px;"></div>
+        </div>
+        <div class="activity-footer">
+          <div class="add-cal-toggle" onclick="toggleActivityCal(${act.id})">
+            <div class="toggle-switch ${act.inCalendar?'on':''}" id="toggle-${act.id}">
+              <div class="toggle-knob"></div>
+            </div>
+            <span class="toggle-label">${act.inCalendar?'Added to calendar':'Add to calendar'}</span>
+          </div>
+          <button class="btn-sm ${act.inCalendar?'btn-ghost':'btn-sage'}" onclick="toggleActivityCal(${act.id})">${act.inCalendar?'✓ Added':'+ Add'}</button>
+        </div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function toggleActivityCal(id) {
+  const act = activities.find(a => a.id === id);
+  if(!act) return;
+  act.inCalendar = !act.inCalendar;
+  if(act.inCalendar) {
+    addEventToCalendar(act.title, act.date, act.time, act.emoji, 'activity');
+    showNotification('Added to Calendar!', act.title + ' has been added to your calendar.');
+  } else {
+    showNotification('Removed from Calendar', act.title + ' removed from your calendar.');
+  }
+  renderActivities(document.querySelector('.filter-tab.active')?.dataset?.cat);
+}
+
+function filterActivities(cat, btn) {
+  document.querySelectorAll('.filter-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  btn.dataset.cat = cat;
+  renderActivities(cat);
+}
+
+function addActivity() {
+  const title = document.getElementById('act-title').value.trim();
+  const desc = document.getElementById('act-desc').value.trim();
+  const date = document.getElementById('act-date').value;
+  const time = document.getElementById('act-time').value;
+  const cat = document.getElementById('act-cat').value;
+  const emoji = document.getElementById('act-emoji').value || '🎯';
+  if(!title || !date) { alert('Please fill in title and date.'); return; }
+  activities.unshift({ id: Date.now(), title, desc, date, time, cat, emoji, slots: 50, joined: 0, inCalendar: false });
+  closeModal('add-activity-modal');
+  renderActivities();
+  showNotification('Activity Published!', title + ' is now visible to all students.');
+}
+
+function formatDate(str) {
+  if(!str) return '';
+  const d = new Date(str); const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return months[d.getMonth()] + ' ' + d.getDate();
+}
+
+// ============================================================
+// STUDY ROOMS
+// ============================================================
+function renderRooms() {
+  const grid = document.getElementById('rooms-grid');
+  grid.innerHTML = '';
+  rooms.forEach(room => {
+    const isFull = room.members.length >= room.max;
+    const card = document.createElement('div');
+    card.className = 'room-card';
+    card.innerHTML = `
+      <div class="room-header">
+        <div>
+          <div class="room-name">${room.name}</div>
+          <div style="font-size:0.78rem;color:var(--text-muted);margin-top:2px;">${room.subject}</div>
+        </div>
+        <span class="room-status ${isFull?'full':'open'}">${isFull?'Full':'Open'}</span>
+      </div>
+      <div class="room-members">
+        ${room.members.slice(0,5).map((m,i) => `<div class="member-dot" style="background:${memberColors[i%5]}">${m}</div>`).join('')}
+        ${room.members.length > 5 ? `<div class="member-dot" style="background:var(--border);color:var(--text-muted)">+${room.members.length-5}</div>` : ''}
+      </div>
+      <div class="room-info">${room.desc}<br><br><strong>${room.members.length}/${room.max} members</strong></div>
+      <div class="room-footer">
+        <button class="btn-sm btn-sage" onclick="enterRoom(${room.id})" ${isFull?'disabled style="opacity:0.5"':''}>Enter Room</button>
+        <button class="btn-sm btn-ghost" onclick="shareRoomCode('${room.code}')">Share Code</button>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+function generateCode() {
+  const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  return Array.from({length:6}, () => chars[Math.floor(Math.random()*chars.length)]).join('');
+}
+
+function createRoom() {
+  const name = document.getElementById('new-room-name').value.trim();
+  const desc = document.getElementById('new-room-desc').value.trim();
+  const max = parseInt(document.getElementById('new-room-max').value);
+  if(!name) { alert('Please enter a room name.'); return; }
+  const code = generateCode();
+  const newRoom = { id: Date.now(), name, desc: desc||'A focused study room.', code, members: ['JS'], max, subject: 'Custom' };
+  rooms.unshift(newRoom);
+  closeModal('create-room-modal');
+  renderRooms();
+  showNotification('Room Created! 🚪', 'Your room code is: ' + code + '. Share it with friends!');
+  setTimeout(() => enterRoom(newRoom.id), 500);
+}
+
+function joinRoomByCode() {
+  const code = document.getElementById('join-code-input').value.trim().toUpperCase();
+  const room = rooms.find(r => r.code === code);
+  if(!room) { alert('Invalid room code. Please check and try again.'); return; }
+  if(!room.members.includes('JS')) room.members.push('JS');
+  closeModal('join-room-modal');
+  renderRooms();
+  enterRoom(room.id);
+}
+
+function enterRoom(id) {
+  const room = rooms.find(r => r.id === id);
+  if(!room) return;
+  document.getElementById('rooms-list-view').style.display = 'none';
+  document.getElementById('room-inner-view').classList.add('open');
+  document.getElementById('active-room-name').textContent = room.name;
+  document.getElementById('active-room-code').textContent = room.code;
+  renderRoomMembers(room.members);
+  initRoomChat(room.name);
+}
+
+function leaveRoom() {
+  document.getElementById('rooms-list-view').style.display = '';
+  document.getElementById('room-inner-view').classList.remove('open');
+  stopMusic();
+}
+
+function shareRoomCode(code) {
+  navigator.clipboard?.writeText(code);
+  showNotification('Code Copied!', 'Room code ' + code + ' copied to clipboard.');
+}
+
+function copyCode() {
+  const code = document.getElementById('active-room-code').textContent;
+  navigator.clipboard?.writeText(code);
+  showNotification('Code Copied!', 'Room code ' + code + ' copied to clipboard.');
+}
+
+function renderRoomMembers(members) {
+  const list = document.getElementById('room-members-list');
+  list.innerHTML = '';
+  members.forEach((m, i) => {
+    const el = document.createElement('div');
+    el.className = 'member-row';
+    el.innerHTML = `<div class="member-dot" style="background:${memberColors[i%5]};color:white;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:600;">${m}</div><span class="member-name">${fullName(m)}</span><div class="member-status-dot"></div>`;
+    list.appendChild(el);
+  });
+}
+
+function fullName(initials) {
+  const names = { JS:'Jordan S.', AK:'Alex K.', LM:'Lena M.', RN:'Ryan N.', PT:'Pat T.', SK:'Sam K.', YH:'Yu H.', BW:'Ben W.', NQ:'Nia Q.', AI:'Aria I.', RF:'Rex F.' };
+  return names[initials] || initials;
+}
+
+let chatMessages = [];
+function initRoomChat(roomName) {
+  chatMessages = [
+    { user:'AK', text:'Hey everyone! Let\'s get focused 💪', own:false },
+    { user:'LM', text:'Ready! Starting my timer now 🍅', own:false },
+  ];
+  renderChat();
+}
+
+function renderChat() {
+  const container = document.getElementById('chat-messages');
+  container.innerHTML = '';
+  chatMessages.forEach(msg => {
+    const el = document.createElement('div');
+    el.className = 'chat-msg' + (msg.own?' own':'');
+    const colors = { AK:memberColors[1], LM:memberColors[2], RN:memberColors[3], JS:memberColors[0] };
+    el.innerHTML = `
+      <div class="chat-avatar" style="background:${colors[msg.user]||memberColors[0]}">${msg.user}</div>
+      <div>
+        ${!msg.own ? '<div class="chat-name">' + fullName(msg.user) + '</div>' : ''}
+        <div class="chat-bubble">${msg.text}</div>
+      </div>`;
+    container.appendChild(el);
+  });
+  container.scrollTop = container.scrollHeight;
+}
+
+function sendChat() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if(!text) return;
+  chatMessages.push({ user:'JS', text, own:true });
+  input.value = '';
+  renderChat();
+}
+
+// Room Pomodoro
+let roomPomoRunning = false;
+let roomPomoTime = 25*60;
+let roomPomoInterval = null;
+
+function toggleRoomPomo() {
+  roomPomoRunning = !roomPomoRunning;
+  const btn = document.querySelector('.room-main .btn-sage');
+  if(roomPomoRunning) {
+    btn.textContent = '⏸ Pause';
+    roomPomoInterval = setInterval(() => {
+      if(roomPomoTime > 0) {
+        roomPomoTime--;
+        const m = Math.floor(roomPomoTime/60), s = roomPomoTime%60;
+        document.getElementById('room-pomo-time').textContent = pad(m)+':'+pad(s);
+      } else {
+        clearInterval(roomPomoInterval);
+        roomPomoRunning = false;
+        btn.textContent = '▶ Start Focus';
+        showNotification('Group Session Done! 🎉', 'Time for a break — great work everyone!');
+        chatMessages.push({ user:'JS', text:'✅ Focus session complete! Great work team 🎉', own:true });
+        renderChat();
+      }
+    }, 1000);
+  } else {
+    clearInterval(roomPomoInterval);
+    btn.textContent = '▶ Start Focus';
+  }
+}
+
+function resetRoomPomo() {
+  clearInterval(roomPomoInterval);
+  roomPomoRunning = false;
+  roomPomoTime = 25*60;
+  document.getElementById('room-pomo-time').textContent = '25:00';
+  document.querySelector('.room-main .btn-sage').textContent = '▶ Start Focus';
+}
+
+// ============================================================
+// MUSIC BOT
+// ============================================================
+function renderMusicQueue() {
+  const list = document.getElementById('music-queue-list');
+  if(!list) return;
+  list.innerHTML = '';
+  tracks.forEach((t, i) => {
+    const el = document.createElement('div');
+    el.className = 'music-queue-item' + (i===currentTrack?' playing':'');
+    el.innerHTML = `<div class="queue-dot"></div><div style="flex:1;">${t.title}</div><div style="opacity:0.6;font-size:0.72rem;">${t.duration}</div>`;
+    el.onclick = () => { currentTrack=i; loadTrack(); };
+    list.appendChild(el);
+  });
+}
+
+function loadTrack() {
+  const t = tracks[currentTrack];
+  document.getElementById('music-song').textContent = t.title;
+  document.getElementById('music-artist').textContent = t.artist;
+  document.getElementById('music-art').textContent = t.emoji;
+  document.getElementById('music-total').textContent = t.duration;
+  musicProgress = 0;
+  document.getElementById('music-fill').style.width = '0%';
+  document.getElementById('music-current').textContent = '0:00';
+  renderMusicQueue();
+  if(isPlaying) startMusicProgress();
+}
+
+function togglePlay() {
+  isPlaying = !isPlaying;
+  document.getElementById('play-btn').textContent = isPlaying ? '⏸' : '▶';
+  if(isPlaying) startMusicProgress();
+  else { clearInterval(musicInterval); }
+  const msg = isPlaying ? '🎵 Now playing: ' + tracks[currentTrack].title : '⏸ Music paused';
+  if(chatMessages) { chatMessages.push({ user:'JS', text: msg, own:true }); renderChat(); }
+}
+
+function startMusicProgress() {
+  clearInterval(musicInterval);
+  const [mm, ss] = tracks[currentTrack].duration.split(':').map(Number);
+  const totalSecs = mm*60+ss;
+  musicInterval = setInterval(() => {
+    musicProgress = Math.min(100, musicProgress + 100/totalSecs);
+    document.getElementById('music-fill').style.width = musicProgress+'%';
+    const elapsed = Math.floor(musicProgress/100*totalSecs);
+    document.getElementById('music-current').textContent = Math.floor(elapsed/60)+':'+(elapsed%60<10?'0':'')+elapsed%60;
+    if(musicProgress >= 100) { nextTrack(); }
+  }, 1000);
+}
+
+function stopMusic() { clearInterval(musicInterval); isPlaying=false; const btn=document.getElementById('play-btn'); if(btn) btn.textContent='▶'; }
+function nextTrack() { currentTrack=(currentTrack+1)%tracks.length; loadTrack(); }
+function prevTrack() { currentTrack=(currentTrack-1+tracks.length)%tracks.length; loadTrack(); }
+function shuffleTrack() { currentTrack=Math.floor(Math.random()*tracks.length); loadTrack(); showNotification('Shuffle 🔀','Now playing: '+tracks[currentTrack].title); }
+function toggleLoop() { showNotification('Loop','Loop toggled!'); }
+function seekMusic(e) {
+  const bar = e.currentTarget; const rect=bar.getBoundingClientRect();
+  musicProgress = ((e.clientX-rect.left)/rect.width)*100;
+  document.getElementById('music-fill').style.width=musicProgress+'%';
+}
+
+// ============================================================
+// MEDIA GALLERY
+// ============================================================
+function renderMedia(filter) {
+  const grid = document.getElementById('media-grid');
+  let items = filter && filter !== 'all' ? mediaItems.filter(m => filter==='video'?m.file==='video':m.type===filter) : mediaItems;
+  document.getElementById('media-count').textContent = items.length + ' items';
+  grid.innerHTML = '';
+  items.forEach(item => {
+    const el = document.createElement('div');
+    el.className = 'media-item';
+    el.innerHTML = `
+      <div class="media-thumb" style="background:${item.color}">
+        <span>${item.emoji}</span>
+        ${item.file==='video'?'<span class="media-type-badge">▶ Video</span>':''}
+      </div>
+      <div class="media-info">
+        <div class="media-filename">${item.name}</div>
+        <div class="media-meta">${item.user} · ${item.date}</div>
+      </div>`;
+    grid.appendChild(el);
+  });
+}
+
+function filterMedia(cat, btn) {
+  document.querySelectorAll('.media-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderMedia(cat);
+}
+
+function triggerMediaUpload() { document.getElementById('media-file-input').click(); }
+
+function handleMediaUpload(input) {
+  Array.from(input.files).forEach(file => {
+    const isVideo = file.type.startsWith('video');
+    const emoji = isVideo ? '🎬' : ['📸','🌅','💻','🎓','🌿','✨'][Math.floor(Math.random()*6)];
+    const colors = ['#e8f0eb','#fdf3e7','#eef1f5','#fbeaea'];
+    mediaItems.unshift({
+      id: Date.now(), name: file.name.replace(/\.[^/.]+$/,''),
+      type: isVideo?'video':'study', file: isVideo?'video':'photo',
+      emoji, color: colors[Math.floor(Math.random()*4)], user: 'Jordan S.', date: 'Just now'
+    });
+    renderMedia();
+    showNotification('Uploaded! 📸', file.name + ' added to your gallery.');
+  });
+}
+
+// ============================================================
+// POMODORO
+// ============================================================
+function togglePomo() {
+  const panel = document.getElementById('pomo-panel');
+  panel.classList.toggle('open');
+}
+
+function setPomoMode(mode, btn) {
+  pomoMode = mode;
+  pomoRunning = false;
+  clearInterval(pomoInterval);
+  pomoTimeLeft = POMO_MODES[mode];
+  document.querySelectorAll('.pomo-mode').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  updatePomoDisplay();
+  document.getElementById('pomo-start-btn').textContent = '▶ Start';
+  document.getElementById('pomo-label').textContent = (mode==='focus'?'Focus session':'Break time') + ' • Round ' + pomoRound;
+}
+
+function updatePomoDisplay() {
+  const m = Math.floor(pomoTimeLeft/60), s = pomoTimeLeft%60;
+  document.getElementById('pomo-display').textContent = pad(m)+':'+pad(s);
+  const total = POMO_MODES[pomoMode];
+  const pct = 1 - (pomoTimeLeft/total);
+  const circ = 2 * Math.PI * 40;
+  document.getElementById('pomo-ring-fill').style.strokeDashoffset = circ * (1-pct);
+}
+
+function pad(n) { return n < 10 ? '0'+n : n; }
+
+function togglePomoTimer() {
+  pomoRunning = !pomoRunning;
+  document.getElementById('pomo-start-btn').textContent = pomoRunning ? '⏸ Pause' : '▶ Resume';
+  if(pomoRunning) {
+    pomoInterval = setInterval(() => {
+      if(pomoTimeLeft > 0) { pomoTimeLeft--; updatePomoDisplay(); }
+      else {
+        clearInterval(pomoInterval);
+        pomoRunning = false;
+        document.getElementById('pomo-start-btn').textContent = '▶ Start';
+        if(pomoMode === 'focus') {
+          pomoRound++;
+          logPomoSession(true);
+          showNotification('Focus Session Complete! 🎉', 'Great work! Take a well-deserved break.');
+        } else {
+          pomoMode = 'focus';
+          pomoTimeLeft = POMO_MODES.focus;
+          updatePomoDisplay();
+          showNotification('Break Over!', 'Time to get back to focusing 💪');
+        }
+      }
+    }, 1000);
+  } else { clearInterval(pomoInterval); }
+}
+
+function resetPomoTimer() {
+  clearInterval(pomoInterval);
+  pomoRunning = false;
+  pomoTimeLeft = POMO_MODES[pomoMode];
+  updatePomoDisplay();
+  document.getElementById('pomo-start-btn').textContent = '▶ Start';
+}
+
+function logPomoSession(auto) {
+  const now = new Date();
+  const timeStr = now.getHours()+':'+(now.getMinutes()<10?'0':'')+now.getMinutes();
+  const labels = ['Deep Work','Reading','Problem Sets','Revision','Writing','Research','Practice'];
+  const label = labels[Math.floor(Math.random()*labels.length)];
+  const duration = pomoMode==='focus'?'25 min':'5 min';
+  const session = {
+    label, timeStr, duration,
+    dateKey: now.getFullYear()+'-'+(now.getMonth()+1)+'-'+now.getDate()
+  };
+  pomodoroSessions.push(session);
+  totalStudySeconds += POMO_MODES[pomoMode] - pomoTimeLeft;
+  updateStats();
+  renderPomoHistory();
+  renderCalendar();
+  if(!auto) showNotification('Session Logged! 📋', label + ' (' + duration + ') added to calendar.');
+}
+
+function renderPomoHistory() {
+  const list = document.getElementById('pomo-sessions-list');
+  if(pomodoroSessions.length === 0) {
+    list.innerHTML = '<div style="font-size:0.78rem;color:var(--text-muted);text-align:center;padding:0.5rem;">No sessions yet!</div>';
+    return;
+  }
+  list.innerHTML = '';
+  pomodoroSessions.slice().reverse().slice(0,4).forEach(s => {
+    const el = document.createElement('div');
+    el.className = 'pomo-session-item';
+    el.innerHTML = `<div class="pomo-dot"></div><div class="pomo-session-info"><div class="pomo-session-name">${s.label}</div><div class="pomo-session-time">${s.timeStr}</div></div><div class="pomo-session-dur">${s.duration}</div>`;
+    list.appendChild(el);
+  });
+}
+
+function updateStats() {
+  document.getElementById('stat-sessions').textContent = pomodoroSessions.length;
+  const hours = (totalStudySeconds / 3600).toFixed(1);
+  document.getElementById('stat-hours').textContent = hours + 'h';
+}
+
+// ============================================================
+// MODALS
+// ============================================================
+function openModal(id) { document.getElementById(id).classList.add('open'); }
+function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(m => m.addEventListener('click', e => { if(e.target===m) m.classList.remove('open'); }));
+
+// ============================================================
+// NOTIFICATIONS
+// ============================================================
+function showNotification(title, msg) {
+  const n = document.getElementById('notification');
+  document.getElementById('notif-title').textContent = title;
+  document.getElementById('notif-msg').textContent = msg;
+  n.classList.add('show');
+  setTimeout(() => n.classList.remove('show'), 3500);
+}
+
+// Init pomo display
+updatePomoDisplay();
+</script>
+</body>
+</html>
